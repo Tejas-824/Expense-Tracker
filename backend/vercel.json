@@ -1,0 +1,17 @@
+{
+    "version" : 2,
+    "name" : "Expense Tracker",
+    "builds" : [
+        {
+            "src" : "./app.js",
+            "use" : "@vercel/node"
+        }
+    ],
+    "routes" : [
+        {
+            "src" : "/(.*)",
+            "dest" : "/"
+        }
+    ]
+
+}
