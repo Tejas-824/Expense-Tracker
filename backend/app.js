@@ -11,30 +11,34 @@ const errorHandler = require("./middlewares/errorHandlerMiddleware");
 
 const app = express();
 
-// MongoDB connection
+// Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => console.log("MongoDB Connected"))
   .catch((e) => console.error("MongoDB connection error:", e));
 
-// Middlewares
+// Middleware
 app.use(cors({
-  origin: "http://localhost:5173", 
+  origin: [
+    "http://localhost:5173", 
+    process.env.CLIENT_URL   
+  ],
   credentials: true,
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use("/api/v1/users", userRouter);           
-app.use("/api/v1/categories", categoryRouter);  
-app.use("/api/v1/transactions", transactionRouter); 
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/categories", categoryRouter);
+app.use("/api/v1/transactions", transactionRouter);
 
-// Error handling middleware
+// Error handler
 app.use(errorHandler);
 
 // Start server
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
-}); 
+});
