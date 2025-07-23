@@ -1,4 +1,4 @@
-#  Expense Tracker
+#  Expense Tracker (Mern Stack Project)
 
 A full-featured Expense Tracker built using the MERN (MongoDB, Express, React, Node.js) stack. This app helps you manage your income and expenses efficiently, track where your money goes, and visualize spending patterns through charts.
 
