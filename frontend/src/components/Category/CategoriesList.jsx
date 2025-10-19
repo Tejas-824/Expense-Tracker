@@ -1,21 +1,22 @@
 import { useEffect, useState } from "react";
 import { FaTrash, FaEdit } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { listCategoriesAPI, deleteCategoryAPI } from "../../services/category/categoryService";
 import AlertMessage from "../Alert/AlertMessage";
 
 const CategoriesList = () => {
-  const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState(null);
-  const [setIsDeleting] = useState(false);
-  const [setDeleteError] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
+  const [successMsg, setSuccessMsg] = useState(null);
 
   const fetchCategories = async () => {
     setIsLoading(true);
     setIsError(false);
+    setError(null);
     try {
       const data = await listCategoriesAPI();
       setCategories(data);
@@ -32,64 +33,74 @@ const CategoriesList = () => {
   }, []);
 
   const handleDelete = async (categoryId) => {
+    if (!window.confirm("Are you sure you want to delete this category?")) return;
+
     setIsDeleting(true);
     setDeleteError(null);
+    setSuccessMsg(null);
     try {
       await deleteCategoryAPI(categoryId);
+      setSuccessMsg("Category deleted successfully");
       fetchCategories();
     } catch (err) {
-      setDeleteError(err);
-      console.log("Delete failed:", err);
+      setDeleteError(err?.response?.data?.message || "Failed to delete category");
     } finally {
       setIsDeleting(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto my-10 bg-white p-6 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-semibold text-teal-600 mb-4">Categories</h2>
+    <div className="max-w-3xl mx-auto my-10 bg-white p-6 md:p-8 rounded-2xl shadow-xl">
+      <h2 className="text-3xl font-semibold text-teal-600 mb-6">Categories</h2>
 
-      {isLoading && <AlertMessage type="loading" message="Loading..." />}
-      {isError && (
-        <AlertMessage
-          type="error"
-          message={error?.response?.data?.message || "Something went wrong"}
-        />
-      )}
+      {/* Loading/Error/Success */}
+      {isLoading && <AlertMessage type="loading" message="Loading categories..." />}
+      {isError && <AlertMessage type="error" message={error?.response?.data?.message || "Something went wrong"} />}
+      {deleteError && <AlertMessage type="error" message={deleteError} />}
+      {successMsg && <AlertMessage type="success" message={successMsg} />}
 
+      {/* Categories List */}
       <ul className="space-y-4">
-        {categories?.map((category) => (
-          <li
-            key={category._id}
-            className="flex justify-between items-center bg-gray-50 p-3 rounded-md"
-          >
-            <div>
-              <span className="text-teal-800">{category.name}</span>
-              <span
-                className={`ml-2 px-2 inline-flex text-xs font-semibold rounded-full ${
-                  category.type === "income"
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800"
-                }`}
-              >
-                {category.type.charAt(0).toUpperCase() + category.type.slice(1)}
-              </span>
-            </div>
-            <div className="flex space-x-3">
-              <Link to={`/update-category/${category._id}`}>
-                <button className="text-teal-500 hover:text-teal-700">
-                  <FaEdit />
+        {categories?.length > 0 ? (
+          categories.map((category) => (
+            <li
+              key={category._id}
+              className="flex flex-col md:flex-row justify-between items-start md:items-center bg-gray-50 p-4 rounded-xl shadow-sm hover:shadow-md transition"
+            >
+              <div className="flex flex-col md:flex-row md:items-center md:space-x-4">
+                <span className="text-teal-800 font-medium">{category.name}</span>
+                <span
+                  className={`mt-1 md:mt-0 inline-block px-3 py-1 text-xs font-semibold rounded-full ${
+                    category.type === "income"
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {category.type.charAt(0).toUpperCase() + category.type.slice(1)}
+                </span>
+              </div>
+
+              <div className="flex space-x-4 mt-3 md:mt-0">
+                <Link to={`/update-category/${category._id}`}>
+                  <button className="text-teal-500 hover:text-teal-700 transition">
+                    <FaEdit />
+                  </button>
+                </Link>
+                <button
+                  onClick={() => handleDelete(category._id)}
+                  disabled={isDeleting}
+                  className={`text-red-500 hover:text-red-700 transition ${
+                    isDeleting ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  <FaTrash />
                 </button>
-              </Link>
-              <button
-                onClick={() => handleDelete(category._id)}
-                className="text-red-500 hover:text-red-700"
-              >
-                <FaTrash />
-              </button>
-            </div>
-          </li>
-        ))}
+              </div>
+            </li>
+          ))
+        ) : (
+          <p className="text-gray-500 italic">No categories found. Add some!</p>
+        )}
       </ul>
     </div>
   );

@@ -12,7 +12,6 @@ const TransactionChart = () => {
     const fetchTransactions = async () => {
       try {
         const fetched = await listTransactionsAPI();
-        console.log("Fetched Transactions:", fetched);
         setTransactions(fetched || []);
       } catch (error) {
         console.error("Failed to load transactions:", error);
@@ -45,16 +44,17 @@ const TransactionChart = () => {
       {
         label: "Transactions",
         data: [totals.income, totals.expense],
-        backgroundColor: ["#2E8B57", "#C0392B"],
+        backgroundColor: ["#2E8B57", "#C0392B"], // ✅ ORIGINAL COLORS
         borderColor: "#ffffff",
         borderWidth: 1,
-        hoverOffset: 8,
+        hoverOffset: 10,
       },
     ],
   };
 
   const options = {
     maintainAspectRatio: false,
+    responsive: true,
     plugins: {
       legend: {
         position: "bottom",
@@ -101,8 +101,8 @@ const TransactionChart = () => {
   };
 
   return (
-    <div className="my-8 p-6 bg-white rounded-xl shadow-md border border-gray-200">
-      <h1 className="text-2xl font-semibold text-center mb-6">
+    <div className="my-8 p-6 bg-white rounded-xl shadow-md border border-gray-200 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-semibold text-center mb-6 text-gray-800">
         Transaction Overview
       </h1>
       <div style={{ height: "350px" }}>

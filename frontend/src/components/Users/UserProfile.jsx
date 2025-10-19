@@ -37,66 +37,79 @@ const UserProfile = () => {
   });
 
   return (
-    <>
-      <div className="max-w-4xl mx-auto my-10 p-8 bg-white rounded-lg shadow-md">
-        <h1 className="mb-4 text-3xl text-center font-extrabold text-gray-800">
-          Welcome!
-        </h1>
-
-        <h3 className="text-xl font-semibold text-gray-700 mb-6">Update Profile</h3>
-
-        {isPending && <AlertMessage type="loading" message="Updating..." />}
-        {isError && (
-          <AlertMessage type="error" message={errorMsg} />
-        )}
-        {isSuccess && (
-          <AlertMessage type="success" message="Updated successfully" />
-        )}
-
-        <form onSubmit={formik.handleSubmit} className="space-y-6">
-          <div className="flex items-center space-x-4">
-            <FaUserCircle className="text-3xl text-teal-400" />
-            <div className="flex-1">
-              <label htmlFor="username" className="text-sm font-medium text-gray-700">
-                Username
-              </label>
-              <input
-                {...formik.getFieldProps("username")}
-                type="text"
-                id="username"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-4 focus:outline-none focus:ring-teal-500 focus:border-teal-500"
-                placeholder="Your username"
-              />
-            </div>
+    <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden">
+        <div className="md:flex">
+          {/* Left Section */}
+          <div className="md:w-1/2 bg-teal-50 p-8 flex flex-col justify-center items-center space-y-6">
+            <FaUserCircle className="text-6xl text-teal-400" />
+            <h2 className="text-2xl font-extrabold text-teal-700 text-center">Welcome!</h2>
+            <p className="text-gray-600 text-center">
+              Update your profile details below.
+            </p>
           </div>
-          <div className="flex items-center space-x-4">
-            <FaEnvelope className="text-3xl text-teal-400" />
-            <div className="flex-1">
-              <label htmlFor="email" className="text-sm font-medium text-gray-700">
-                Email
-              </label>
-              <input
-                {...formik.getFieldProps("email")}
-                type="email"
-                id="email"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-4 focus:outline-none focus:ring-teal-500 focus:border-teal-500"
-                placeholder="Your email"
-              />
-            </div>
+
+          {/* Right Section */}
+          <div className="md:w-1/2 p-8">
+            {isPending && <AlertMessage type="loading" message="Updating..." />}
+            {isError && <AlertMessage type="error" message={errorMsg} />}
+            {isSuccess && <AlertMessage type="success" message="Updated successfully" />}
+
+            <form onSubmit={formik.handleSubmit} className="space-y-6">
+              {/* Username */}
+              <div className="flex items-center space-x-4">
+                <FaUserCircle className="text-3xl text-teal-400 flex-shrink-0" />
+                <div className="flex-1">
+                  <label htmlFor="username" className="text-sm font-medium text-gray-700">
+                    Username
+                  </label>
+                  <input
+                    {...formik.getFieldProps("username")}
+                    type="text"
+                    id="username"
+                    placeholder="Your username"
+                    className="mt-1 block w-full border border-gray-300 rounded-xl shadow-sm py-2 px-4 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition"
+                  />
+                </div>
+              </div>
+
+              {/* Email */}
+              <div className="flex items-center space-x-4">
+                <FaEnvelope className="text-3xl text-teal-400 flex-shrink-0" />
+                <div className="flex-1">
+                  <label htmlFor="email" className="text-sm font-medium text-gray-700">
+                    Email
+                  </label>
+                  <input
+                    {...formik.getFieldProps("email")}
+                    type="email"
+                    id="email"
+                    placeholder="Your email"
+                    className="mt-1 block w-full border border-gray-300 rounded-xl shadow-sm py-2 px-4 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition"
+                  />
+                </div>
+              </div>
+
+              {/* Submit */}
+              <div className="flex justify-center mt-4">
+  <button
+    type="submit"
+    className="bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-opacity-50 transition"
+  >
+    Confirm Changes
+  </button>
+</div>
+
+            </form>
           </div>
-          <div className="flex justify-end mt-6">
-            <button
-              type="submit"
-              className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline"
-            >
-              Confirm Changes
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
 
-      <UpdatePassword />
-    </>
+      {/* Update Password */}
+      <div className="mt-8 max-w-4xl mx-auto">
+        <UpdatePassword />
+      </div>
+    </div>
   );
 };
 

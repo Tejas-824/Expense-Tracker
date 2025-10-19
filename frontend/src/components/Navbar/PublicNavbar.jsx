@@ -7,98 +7,78 @@ import { Link } from "react-router-dom";
 
 export default function PublicNavbar() {
   return (
-    <Disclosure as="nav" className="bg-white shadow">
+    <Disclosure as="nav" className="bg-white shadow-md sticky top-0 z-50">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex h-16 justify-between">
-              <div className="flex">
-                <div className="-ml-2 mr-2 flex items-center md:hidden">
-                  <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
-                    <span className="absolute -inset-0.5" />
+            <div className="flex h-16 justify-between items-center">
+              {/* Left side: mobile menu button + logo + name */}
+              <div className="flex items-center space-x-4">
+                {/* Mobile menu button */}
+                <div className="flex md:hidden">
+                  <Disclosure.Button className="inline-flex items-center justify-center rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-teal-500 transition">
                     <span className="sr-only">Open main menu</span>
                     {open ? (
-                      <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+                      <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                     ) : (
-                      <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+                      <Bars3Icon className="h-6 w-6" aria-hidden="true" />
                     )}
                   </Disclosure.Button>
                 </div>
-                <div className="flex flex-shrink-0 items-center">
+
+                {/* Logo + App Name */}
+                <div className="flex items-center space-x-2">
                   <img
                     className="h-12 w-auto"
-                    src="/logo.png"  
+                    src="/logo.png"
                     alt="ExpenseTracker Logo"
                   />
-                </div>
-                <div className="hidden md:ml-6 md:flex md:space-x-8">
-                  <Link
-                    to="/"
-                    className="inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900"
-                  >
-                    ExpenseTracker
-                  </Link>
+                  <span className="text-2xl font-bold text-teal-600 tracking-wide hidden sm:block">
+                    Expense Tracker
+                  </span>
                 </div>
               </div>
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
 
-                  <Link
-                    to="/register"
-                    className="relative inline-flex items-center gap-x-1.5 rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                  >
-                    <FaRegUser className="-ml-0.5 h-5 w-5" aria-hidden="true" />
-                    Register
-                  </Link>
-                  <Link
-                    to="/login"
-                    className="relative ml-2 inline-flex items-center gap-x-1.5 rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 animate-bounce"
-                  >
-                    <RiLoginCircleLine
-                      className="-ml-0.5 h-5 w-5"
-                      aria-hidden="true"
-                    />
-                    Login
-                  </Link>
-                </div>
-                <div className="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center">
-                  <button
-                    type="button"
-                    className="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  >
-                    <span className="absolute -inset-1.5" />
-                  </button>
-                </div>
+              {/* Right side: Register & Login */}
+              <div className="flex items-center space-x-2">
+                <Link
+                  to="/register"
+                  className="inline-flex items-center gap-x-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-blue-700 transition"
+                >
+                  <FaRegUser className="h-5 w-5" />
+                  Register
+                </Link>
+                <Link
+                  to="/login"
+                  className="inline-flex items-center gap-x-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-green-700 transition animate-bounce"
+                >
+                  <RiLoginCircleLine className="h-5 w-5" />
+                  Login
+                </Link>
               </div>
             </div>
           </div>
 
+          {/* Mobile Menu */}
           <Disclosure.Panel as={Fragment}>
-            <div className="space-y-1 pb-3 pt-2">
-              <Link to="/">
-                <Disclosure.Button
-                  as="button"
-                  className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 sm:pl-5 sm:pr-6"
-                >
-                  ExpenseTracker
-                </Disclosure.Button>
+            <div className="space-y-1 pb-3 pt-2 md:hidden bg-gray-50">
+              <Link
+                to="/"
+                className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-600 hover:border-indigo-500 hover:bg-white hover:text-indigo-600 transition"
+              >
+                Expense Tracker
               </Link>
-
-              <Link to="/register">
-                <Disclosure.Button
-                  as="button"
-                  className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 sm:pl-5 sm:pr-6"
-                >
-                  Register
-                </Disclosure.Button>
+              <Link
+                to="/register"
+                className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-600 hover:border-blue-600 hover:bg-white hover:text-blue-600 transition"
+              >
+                Register
               </Link>
-              <Link to="/login">
-                <Disclosure.Button
-                  as="button"
-                  className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 sm:pl-5 sm:pr-6"
-                >
-                  Login
-                </Disclosure.Button>
+              <Link
+                to="/login"
+                className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-600 hover:border-green-600 hover:bg-white hover:text-green-600 transition"
+              >
+                Login
               </Link>
             </div>
           </Disclosure.Panel>

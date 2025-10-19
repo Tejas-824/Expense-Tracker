@@ -58,6 +58,7 @@ const TransactionForm = () => {
         const result = await addTransactionAPI(values);
         console.log(result);
         setIsSuccess(true);
+        formik.resetForm();
       } catch (err) {
         console.log(err);
         setError(err);
@@ -71,47 +72,51 @@ const TransactionForm = () => {
   return (
     <form
       onSubmit={formik.handleSubmit}
-      className="max-w-lg mx-auto my-10 bg-white p-6 rounded-lg shadow-lg space-y-4"
+      className="max-w-xl mx-auto my-12 bg-white p-8 rounded-2xl shadow-xl space-y-6 border border-gray-100"
     >
-      <div className="text-center">
-        <h2 className="text-2xl font-semibold text-teal-600">
-          Transaction Details
-        </h2>
-        <p className="text-gray-800">Fill in the details below.</p>
+      {/* Header */}
+      <div className="text-center space-y-2">
+        <h2 className="text-3xl font-extrabold text-teal-600">Transaction Details</h2>
+        <p className="text-gray-700 text-sm">Fill in the details below to add a transaction.</p>
       </div>
 
+      {/* Alerts */}
       {isError && (
         <AlertMessage
           type="error"
           message={
             error?.response?.data?.message ||
-            "Something happened. Please try again later."
+            "Something went wrong. Please try again later."
           }
         />
       )}
       {isSuccess && (
-        <AlertMessage type="success" message="Transaction added successfully" />
+        <AlertMessage type="success" message="Transaction added successfully!" />
       )}
-      <div className="space-y-1">
-        <label htmlFor="type" className="flex gap-2 items-center text-teal-600 font-medium">
+
+      {/* Transaction Type */}
+      <div className="flex flex-col space-y-1">
+        <label htmlFor="type" className="flex gap-2 items-center text-teal-600 font-semibold">
           <FaWallet className="text-teal-500" />
-          <span>Type</span>
+          Type
         </label>
         <select
           {...formik.getFieldProps("type")}
           id="type"
-          className="block w-full p-2 mt-1 border border-teal-300 rounded-md shadow-sm focus:border-teal-500 focus:ring focus:ring-teal-500 focus:ring-opacity-50"
+          className="block w-full p-3 mt-1 border border-teal-300 rounded-lg shadow-sm focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 transition"
         >
           <option value="">Select transaction type</option>
           <option value="income">Income</option>
           <option value="expense">Expense</option>
         </select>
         {formik.touched.type && formik.errors.type && (
-          <p className="text-red-500 text-xs">{formik.errors.type}</p>
+          <p className="text-red-500 text-xs italic">{formik.errors.type}</p>
         )}
       </div>
+
+      {/* Amount */}
       <div className="flex flex-col space-y-1">
-        <label htmlFor="amount" className="text-teal-600 font-medium">
+        <label htmlFor="amount" className="text-teal-600 font-semibold">
           <FaRupeeSign className="inline mr-2 text-teal-500" />
           Amount
         </label>
@@ -119,40 +124,40 @@ const TransactionForm = () => {
           type="number"
           {...formik.getFieldProps("amount")}
           id="amount"
-          placeholder="Amount"
-          className="w-full border border-teal-300 rounded-md shadow-sm py-2 px-3 focus:border-teal-500 focus:ring focus:ring-teal-500 focus:ring-opacity-50"
+          placeholder="Enter amount"
+          className="w-full border border-teal-300 rounded-lg shadow-sm py-3 px-4 focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 transition"
         />
         {formik.touched.amount && formik.errors.amount && (
           <p className="text-red-500 text-xs italic">{formik.errors.amount}</p>
         )}
       </div>
+
+      {/* Category */}
       <div className="flex flex-col space-y-1">
-        <label htmlFor="category" className="text-teal-600 font-medium">
+        <label htmlFor="category" className="text-teal-600 font-semibold">
           <FaRegCommentDots className="inline mr-2 text-teal-500" />
           Category
         </label>
         <select
           {...formik.getFieldProps("category")}
           id="category"
-          className="w-full border border-teal-300 rounded-md shadow-sm py-2 px-3 focus:border-teal-500 focus:ring focus:ring-teal-500 focus:ring-opacity-50"
+          className="w-full border border-teal-300 rounded-lg shadow-sm py-3 px-4 focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 transition"
         >
           <option value="">Select a category</option>
-          {data?.map((category) => {
-            return (
-              <option key={category?._id} value={category?.name}>
-                {category?.name}
-              </option>
-            );
-          })}
+          {data?.map((category) => (
+            <option key={category?._id} value={category?.name}>
+              {category?.name}
+            </option>
+          ))}
         </select>
         {formik.touched.category && formik.errors.category && (
-          <p className="text-red-500 text-xs italic">
-            {formik.errors.category}
-          </p>
+          <p className="text-red-500 text-xs italic">{formik.errors.category}</p>
         )}
       </div>
+
+      {/* Date */}
       <div className="flex flex-col space-y-1">
-        <label htmlFor="date" className="text-teal-600 font-medium">
+        <label htmlFor="date" className="text-teal-600 font-semibold">
           <FaCalendarAlt className="inline mr-2 text-teal-500" />
           Date
         </label>
@@ -160,35 +165,34 @@ const TransactionForm = () => {
           type="date"
           {...formik.getFieldProps("date")}
           id="date"
-          className="w-full border border-teal-300 rounded-md shadow-sm py-2 px-3 focus:border-teal-500 focus:ring focus:ring-teal-500 focus:ring-opacity-50"
+          className="w-full border border-teal-300 rounded-lg shadow-sm py-3 px-4 focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 transition"
         />
         {formik.touched.date && formik.errors.date && (
           <p className="text-red-500 text-xs italic">{formik.errors.date}</p>
         )}
       </div>
+
+      {/* Description */}
       <div className="flex flex-col space-y-1">
-        <label htmlFor="description" className="text-teal-600 font-medium">
+        <label htmlFor="description" className="text-teal-600 font-semibold">
           <FaRegCommentDots className="inline mr-2 text-teal-500" />
           Description (Optional)
         </label>
         <textarea
           {...formik.getFieldProps("description")}
           id="description"
-          placeholder="Description"
+          placeholder="Enter description"
           rows="3"
-          className="w-full border border-teal-300 rounded-md shadow-sm py-2 px-3 focus:border-teal-500 focus:ring focus:ring-teal-500 focus:ring-opacity-50"
+          className="w-full border border-teal-300 rounded-lg shadow-sm py-3 px-4 focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 transition resize-none"
         ></textarea>
-        {formik.touched.description && formik.errors.description && (
-          <p className="text-red-500 text-xs italic">
-            {formik.errors.description}
-          </p>
-        )}
       </div>
+
+      {/* Submit Button */}
       <div className="flex justify-center">
         <button
           type="submit"
           disabled={isPending}
-          className="mt-4 bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors duration-200"
+          className="mt-4 w-full md:w-auto bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-1 transition-colors duration-200 shadow-md"
         >
           {isPending ? "Submitting..." : "Submit Transaction"}
         </button>
