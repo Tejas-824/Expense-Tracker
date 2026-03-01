@@ -59,6 +59,10 @@ const TransactionForm = () => {
         console.log(result);
         setIsSuccess(true);
         formik.resetForm();
+       setTimeout(() => {
+  navigate("/dashboard");
+}, 1000);
+
       } catch (err) {
         console.log(err);
         setError(err);

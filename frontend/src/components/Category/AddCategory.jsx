@@ -35,7 +35,7 @@ const AddCategory = () => {
       try {
         await addCategoryAPI(values);
         setIsSuccess(true);
-        setTimeout(() => navigate("/categories"), 1500); 
+        setTimeout(() => navigate("/categories"), 1000); 
       } catch (err) {
         setIsError(true);
         setErrorMsg(err?.response?.data?.message || "Something went wrong. Please try again later.");

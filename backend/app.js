@@ -13,7 +13,7 @@ const app = express();
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGO_URL)
+  .connect(process.env.DATABASE_URL)
   .then(() => console.log("MongoDB Connected"))
   .catch((e) => console.error("MongoDB connection error:", e));
 
