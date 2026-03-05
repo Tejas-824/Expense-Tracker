@@ -20,7 +20,7 @@ export const addTransactionAPI = async ({
 }) => {
   try {
     const response = await axios.post(
-      `${BASE_URL}/transactions/create`,
+      `${BASE_URL}/api/v1/transactions/create`,
       { category, date, description, amount, type },
       { headers: getAuthHeaders() }
     );
@@ -33,7 +33,7 @@ export const addTransactionAPI = async ({
 export const updateCategoryAPI = async ({ name, type, id }) => {
   try {
     const response = await axios.put(
-      `${BASE_URL}/categories/update/${id}`,
+      `${BASE_URL}/api/v1/categories/update/${id}`,
       { name, type },
       { headers: getAuthHeaders() }
     );
@@ -46,7 +46,7 @@ export const updateCategoryAPI = async ({ name, type, id }) => {
 export const deleteCategoryAPI = async (id) => {
   try {
     const response = await axios.delete(
-      `${BASE_URL}/categories/delete/${id}`,
+      `${BASE_URL}/api/v1/categories/delete/${id}`,
       { headers: getAuthHeaders() }
     );
     return response.data;

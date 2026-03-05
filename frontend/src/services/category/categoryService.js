@@ -13,7 +13,7 @@ const getAuthHeaders = () => {
 export const addCategoryAPI = async ({ name, type }) => {
   try {
     const response = await axios.post(
-      `${BASE_URL}/categories/create`,
+      `${BASE_URL}/api/v1/categories/create`,
       { name, type },
       { headers: getAuthHeaders() }
     );
@@ -27,7 +27,7 @@ export const addCategoryAPI = async ({ name, type }) => {
 export const updateCategoryAPI = async ({ name, type, id }) => {
   try {
     const response = await axios.put(
-      `${BASE_URL}/categories/update/${id}`,
+      `${BASE_URL}/api/v1/categories/update/${id}`,
       { name, type },
       { headers: getAuthHeaders() }
     );
@@ -41,7 +41,7 @@ export const updateCategoryAPI = async ({ name, type, id }) => {
 export const deleteCategoryAPI = async (id) => {
   try {
     const response = await axios.delete(
-      `${BASE_URL}/categories/delete/${id}`,
+      `${BASE_URL}/api/v1/categories/delete/${id}`,
       { headers: getAuthHeaders() }
     );
     return response.data;
@@ -54,7 +54,7 @@ export const deleteCategoryAPI = async (id) => {
 export const listCategoriesAPI = async () => {
   try {
     const response = await axios.get(
-      `${BASE_URL}/categories/lists`,
+      `${BASE_URL}/api/v1/categories/lists`,
       { headers: getAuthHeaders() }
     );
     return response.data;
