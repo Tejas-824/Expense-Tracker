@@ -62,7 +62,7 @@ export const listTransactionsAPI = async ({
   endDate,
 } = {}) => {
   try {
-    const response = await axios.get(`${BASE_URL}/transactions/lists`, {
+    const response = await axios.get(`${BASE_URL}/api/v1/transactions/lists`, {
       params: { category, endDate, startDate, type },
       headers: getAuthHeaders(),
     });

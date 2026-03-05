@@ -58,7 +58,7 @@ const TransactionList = () => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {transactions?.map((transaction) => (
-              <tr key={transaction.id}>
+              <tr key={transaction._id}>
                 <td className="px-6 py-4 whitespace-nowrap">
                   {new Date(transaction.date).toLocaleDateString()}
                 </td>

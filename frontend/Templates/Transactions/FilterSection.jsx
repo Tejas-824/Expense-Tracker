@@ -80,7 +80,7 @@ const FilterSection = () => {
           <ul className="list-disc pl-5 space-y-2">
             {transactions.map((transaction) => (
               <li
-                key={transaction.id}
+                key={transaction._id}
                 className="bg-white p-3 rounded-md shadow border border-gray-200 flex justify-between items-center"
               >
                 <div>
