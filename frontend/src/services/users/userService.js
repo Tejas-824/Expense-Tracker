@@ -4,7 +4,7 @@ import { getUserFromStorage } from "../../utils/getUserFromStorage";
 
 export const loginAPI = async ({ email, password }) => {
   try {
-    const response = await axios.post(`${BASE_URL}/users/login`, {
+    const response = await axios.post(`${BASE_URL}/api/v1/users/login`, {
       email,
       password,
     });
@@ -17,7 +17,7 @@ export const loginAPI = async ({ email, password }) => {
 
 export const registerAPI = async ({ email, password, username }) => {
   try {
-    const response = await axios.post(`${BASE_URL}/users/register`, {
+    const response = await axios.post(`${BASE_URL}/api/v1/users/register`, {
       email,
       password,
       username,
@@ -38,7 +38,7 @@ export const changePasswordAPI = async (newPassword) => {
 
   try {
     const response = await axios.put(
-      `${BASE_URL}/users/change-password`,
+      `${BASE_URL}/api/v1/users/change-password`,
       { newPassword },
       {
         headers: {
@@ -62,7 +62,7 @@ export const updateProfileAPI = async ({ email, username }) => {
 
   try {
     const response = await axios.put(
-      `${BASE_URL}/users/update-profile`,
+      `${BASE_URL}/api/v1/users/update-profile`,
       { email, username },
       {
         headers: {
