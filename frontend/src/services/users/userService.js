@@ -11,7 +11,7 @@ export const loginAPI = async ({ email, password }) => {
     return response.data;
   } catch (error) {
     console.error("Error logging in:", error);
-    throw error; 
+    throw error;
   }
 };
 
@@ -25,12 +25,12 @@ export const registerAPI = async ({ email, password, username }) => {
     return response.data;
   } catch (error) {
     console.error("Error registering:", error);
-    throw error; 
+    throw error;
   }
 };
 
 export const changePasswordAPI = async (newPassword) => {
-  const token = getUserFromStorage(); 
+  const token = localStorage.getItem("token");
 
   if (!token) {
     throw new Error("No token found. User might not be authenticated.");
@@ -46,15 +46,15 @@ export const changePasswordAPI = async (newPassword) => {
         },
       }
     );
-    return response.data; 
+    return response.data;
   } catch (error) {
     console.error("Error changing password:", error);
-    throw error; 
+    throw error;
   }
 };
 
 export const updateProfileAPI = async ({ email, username }) => {
-  const token = getUserFromStorage();
+  const token = localStorage.getItem("token");
 
   if (!token) {
     throw new Error("No token found. User might not be authenticated.");
@@ -70,9 +70,9 @@ export const updateProfileAPI = async ({ email, username }) => {
         },
       }
     );
-    return response.data; 
+    return response.data;
   } catch (error) {
     console.error("Error updating profile:", error);
-    throw error; 
+    throw error;
   }
 };

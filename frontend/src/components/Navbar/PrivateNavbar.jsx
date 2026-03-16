@@ -3,8 +3,8 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { IoLogOutOutline } from "react-icons/io5";
 import { logoutAction } from "../../redux/slice/authSlice";
+import { getUserFromStorage } from "../../utils/getUserFromStorage";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -12,28 +12,31 @@ function classNames(...classes) {
 
 export default function PrivateNavbar() {
   const dispatch = useDispatch();
+  const user = getUserFromStorage();
 
   const logoutHandler = () => {
     dispatch(logoutAction());
     localStorage.removeItem("userInfo");
   };
 
+  if (!user) return null;
+
   return (
-    <Disclosure as="nav" className="bg-white shadow-md">
+    <Disclosure as="nav" className="bg-white shadow-md sticky top-0 z-50">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex h-16 justify-between items-center">
-              {/* Logo + App Name */}
-              <div className="flex items-center space-x-2">
-                <img src="/logo.png" alt="Logo" className="h-12 w-auto" />
-                <span className="text-2xl font-bold text-teal-600 tracking-wide">
+            <div className="flex h-16 items-center justify-between">
+              {/* Logo */}
+              <div className="flex min-w-0 items-center space-x-2">
+                <img src="/logo.png" alt="Logo" className="h-10 w-auto sm:h-12" />
+                <span className="truncate text-lg font-bold tracking-wide text-teal-600 sm:text-2xl">
                   Expense Tracker
                 </span>
               </div>
 
-              {/* Desktop Menu */}
-              <div className="hidden md:flex md:space-x-6">
+              {/* Desktop Links */}
+              <div className="hidden md:flex md:items-center md:space-x-6">
                 <Link
                   to="/"
                   className="text-gray-900 font-medium hover:text-teal-600 transition"
@@ -73,101 +76,142 @@ export default function PrivateNavbar() {
               </div>
 
               {/* Right Side */}
-              <div className="flex items-center space-x-3">
-                <button
-                  onClick={logoutHandler}
-                  className="flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg shadow-md text-sm font-semibold transition"
-                >
-                  <IoLogOutOutline className="w-5 h-5" />
-                  Logout
-                </button>
+              <div className="flex items-center space-x-2">
+                {/* Profile Menu */}
+                <div className="hidden sm:flex items-center">
+                  <Menu as="div" className="relative">
+                    <Menu.Button className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-teal-600 text-sm font-bold text-white shadow-md transition duration-200 hover:scale-105 focus:outline-none">
+                      {user?.username?.charAt(0)?.toUpperCase() ||
+                        user?.email?.charAt(0)?.toUpperCase() ||
+                        "U"}
+                    </Menu.Button>
 
-                {/* User Menu */}
-                <Menu as="div" className="relative">
-                  <Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">
-                    <span className="sr-only">Open user menu</span>
-                  </Menu.Button>
-                  <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-200"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                  >
-                    <Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      <Menu.Item>
-                        {({ active }) => (
-                          <Link
-                            to="/dashboard"
-                            className={classNames(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Dashboard
-                          </Link>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <button
-                            onClick={logoutHandler}
-                            className={classNames(
-                              active ? "bg-gray-100" : "",
-                              "block w-full text-left px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Sign out
-                          </button>
-                        )}
-                      </Menu.Item>
-                    </Menu.Items>
-                  </Transition>
-                </Menu>
-              </div>
+                    <Transition
+                      as={Fragment}
+                      enter="transition ease-out duration-200"
+                      enterFrom="transform opacity-0 scale-95 translate-y-1"
+                      enterTo="transform opacity-100 scale-100 translate-y-0"
+                      leave="transition ease-in duration-150"
+                      leaveFrom="transform opacity-100 scale-100 translate-y-0"
+                      leaveTo="transform opacity-0 scale-95 translate-y-1"
+                    >
+                      <Menu.Items className="absolute right-0 mt-3 w-52 overflow-hidden rounded-2xl border border-gray-100 bg-white/95 shadow-xl ring-1 ring-black/5 backdrop-blur-sm z-50">
+                        <div className="border-b border-gray-100 bg-gray-50 px-4 py-3">
+                          <p className="truncate text-sm font-semibold text-gray-800">
+                            {user?.username || "User"}
+                          </p>
+                          <p className="truncate text-xs text-gray-500">
+                            {user?.email}
+                          </p>
+                        </div>
 
-              {/* Mobile Menu Button */}
-              <div className="-mr-2 flex md:hidden">
-                <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-teal-500">
-                  <span className="sr-only">Open main menu</span>
-                  {open ? (
-                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                  ) : (
-                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                  )}
-                </Disclosure.Button>
+                        <Menu.Item>
+                          {({ active }) => (
+                            <Link
+                              to="/dashboard"
+                              className={classNames(
+                                active
+                                  ? "bg-teal-50 text-teal-700"
+                                  : "text-gray-700",
+                                "block px-4 py-3 text-sm font-medium transition"
+                              )}
+                            >
+                              Dashboard
+                            </Link>
+                          )}
+                        </Menu.Item>
+
+                        <Menu.Item>
+                          {({ active }) => (
+                            <button
+                              onClick={logoutHandler}
+                              className={classNames(
+                                active
+                                  ? "bg-red-50 text-red-600"
+                                  : "text-gray-700",
+                                "block w-full px-4 py-3 text-left text-sm font-medium transition"
+                              )}
+                            >
+                              Sign Out
+                            </button>
+                          )}
+                        </Menu.Item>
+                      </Menu.Items>
+                    </Transition>
+                  </Menu>
+                </div>
+
+                {/* Mobile Menu Button */}
+                <div className="flex md:hidden">
+                  <Disclosure.Button className="inline-flex items-center justify-center rounded-lg p-2 text-gray-500 transition hover:bg-teal-50 hover:text-teal-600 focus:outline-none">
+                    {open ? (
+                      <XMarkIcon className="h-6 w-6" />
+                    ) : (
+                      <Bars3Icon className="h-6 w-6" />
+                    )}
+                  </Disclosure.Button>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Mobile Menu */}
-          <Disclosure.Panel as="div" className="md:hidden">
-            <div className="space-y-1 px-2 pt-2 pb-3">
-              <Link to="/" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-teal-600">
+          {/* Mobile Menu Panel */}
+          <Disclosure.Panel className="border-t border-gray-100 bg-white md:hidden">
+            <div className="space-y-2 px-4 py-4">
+              <div className="mb-3 rounded-2xl bg-gray-50 px-4 py-3">
+                <p className="truncate text-sm font-semibold text-gray-800">
+                  {user?.username || "User"}
+                </p>
+                <p className="truncate text-xs text-gray-500">{user?.email}</p>
+              </div>
+
+              <Link
+                to="/"
+                className="block rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-teal-50 hover:text-teal-600"
+              >
                 Home
               </Link>
-              <Link to="/add-transaction" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-teal-600">
+
+              <Link
+                to="/add-transaction"
+                className="block rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-teal-50 hover:text-teal-600"
+              >
                 Add Transaction
               </Link>
-              <Link to="/add-category" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-teal-600">
+
+              <Link
+                to="/add-category"
+                className="block rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-teal-50 hover:text-teal-600"
+              >
                 Add Category
               </Link>
-              <Link to="/categories" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-teal-600">
+
+              <Link
+                to="/categories"
+                className="block rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-teal-50 hover:text-teal-600"
+              >
                 Categories
               </Link>
-              <Link to="/profile" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-teal-600">
+
+              <Link
+                to="/profile"
+                className="block rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-teal-50 hover:text-teal-600"
+              >
                 Profile
               </Link>
-              <Link to="/dashboard" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-teal-600">
+
+              <Link
+                to="/dashboard"
+                className="block rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-teal-50 hover:text-teal-600"
+              >
                 Dashboard
               </Link>
+
               <button
                 onClick={logoutHandler}
-                className="w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-gray-50 hover:text-red-800"
+                className="block w-full rounded-xl px-4 py-3 text-left text-sm font-medium text-red-600 transition hover:bg-red-50"
               >
-                Sign out
+                Sign Out
               </button>
             </div>
           </Disclosure.Panel>

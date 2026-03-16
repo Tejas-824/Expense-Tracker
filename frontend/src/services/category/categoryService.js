@@ -3,10 +3,14 @@ import { BASE_URL } from "../../utils/url";
 import { getUserFromStorage } from "../../utils/getUserFromStorage";
 
 const getAuthHeaders = () => {
-  const token = getUserFromStorage();
-  if (!token) throw new Error("No token found. User might not be authenticated.");
+  const user = getUserFromStorage();
+
+  if (!user || !user.token) {
+    throw new Error("No token found. User might not be authenticated.");
+  }
+
   return {
-    Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${user.token}`,
   };
 };
 

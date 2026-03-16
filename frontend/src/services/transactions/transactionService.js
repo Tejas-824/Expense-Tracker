@@ -3,14 +3,17 @@ import { BASE_URL } from "../../utils/url";
 import { getUserFromStorage } from "../../utils/getUserFromStorage";
 
 const getAuthHeaders = () => {
-  const token = getUserFromStorage();
-  if (!token) {
+  const user = getUserFromStorage();
+
+  if (!user || !user.token) {
     throw new Error("No token found. User might not be authenticated.");
   }
+
   return {
-    Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${user.token}`,
   };
 };
+
 export const addTransactionAPI = async ({
   type,
   category,
@@ -21,7 +24,7 @@ export const addTransactionAPI = async ({
   try {
     const response = await axios.post(
       `${BASE_URL}/api/v1/transactions/create`,
-      { category, date, description, amount, type },
+      { type, category, date, description, amount },
       { headers: getAuthHeaders() }
     );
     return response.data;
@@ -30,31 +33,7 @@ export const addTransactionAPI = async ({
     throw error;
   }
 };
-export const updateCategoryAPI = async ({ name, type, id }) => {
-  try {
-    const response = await axios.put(
-      `${BASE_URL}/api/v1/categories/update/${id}`,
-      { name, type },
-      { headers: getAuthHeaders() }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error updating category:", error);
-    throw error;
-  }
-};
-export const deleteCategoryAPI = async (id) => {
-  try {
-    const response = await axios.delete(
-      `${BASE_URL}/api/v1/categories/delete/${id}`,
-      { headers: getAuthHeaders() }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error deleting category:", error);
-    throw error;
-  }
-};
+
 export const listTransactionsAPI = async ({
   category,
   type,
@@ -63,12 +42,46 @@ export const listTransactionsAPI = async ({
 } = {}) => {
   try {
     const response = await axios.get(`${BASE_URL}/api/v1/transactions/lists`, {
-      params: { category, endDate, startDate, type },
+      params: { category, type, startDate, endDate },
       headers: getAuthHeaders(),
     });
     return response.data;
   } catch (error) {
     console.error("Error listing transactions:", error);
+    throw error;
+  }
+};
+
+export const updateTransactionAPI = async ({
+  id,
+  type,
+  category,
+  date,
+  description,
+  amount,
+}) => {
+  try {
+    const response = await axios.put(
+      `${BASE_URL}/api/v1/transactions/update/${id}`,
+      { type, category, date, description, amount },
+      { headers: getAuthHeaders() }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating transaction:", error);
+    throw error;
+  }
+};
+
+export const deleteTransactionAPI = async (id) => {
+  try {
+    const response = await axios.delete(
+      `${BASE_URL}/api/v1/transactions/delete/${id}`,
+      { headers: getAuthHeaders() }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting transaction:", error);
     throw error;
   }
 };

@@ -1,208 +1,242 @@
 import { Fragment } from "react";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
-import { IoLogOutOutline } from "react-icons/io5";
-
-import { SiAuthy } from "react-icons/si";
+import { useDispatch } from "react-redux";
+import { logoutAction } from "../../redux/slice/authSlice";
+import { getUserFromStorage } from "../../utils/getUserFromStorage";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function PrivateNavbar() {
+  const dispatch = useDispatch();
+  const user = getUserFromStorage();
+
+  const logoutHandler = () => {
+    dispatch(logoutAction());
+    localStorage.removeItem("userInfo");
+  };
+
+  if (!user) return null;
+
   return (
-    <Disclosure as="nav" className="bg-white ">
-      {({ open }) => (
+    <Disclosure as="nav" className="sticky top-0 z-50 bg-white shadow-md">
+      {({ open, close }) => (
         <>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex h-16 justify-start items-center">
-              <div className="flex justify-center flex-row w-full">
-                <div className="-ml-2 mr-2 flex items-left md:hidden">
-                  {/* Mobile menu button */}
-                  <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
-                    <span className="absolute -inset-0.5" />
-                    <span className="sr-only">Open main menu</span>
-                    {open ? (
-                      <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                    ) : (
-                      <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                    )}
-                  </Disclosure.Button>
-                </div>
-                <div className="flex flex-shrink-0 items-center">
-                  {/* Logo */}
-                  <SiAuthy className="h-8 w-auto text-green-500" />
-                </div>
-                <div className="hidden md:ml-6 md:flex md:space-x-8">
-                  <Link
-                    to="/"
-                    className="inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900"
-                  >
-                    MasyncTracker
-                  </Link>
-                </div>
-                <div className="hidden md:ml-6 md:flex md:space-x-8">
-                  <Link
-                    to="/add-transaction"
-                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    Add Transaction
-                  </Link>
-                  <Link
-                    to="/add-category"
-                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    Add Category
-                  </Link>
-                  <Link
-                    to="/categories"
-                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    Categories
-                  </Link>
-                  <Link
-                    to="/profile"
-                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    Profile
-                  </Link>
-                  <Link
-                    to="/dashboard"
-                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    Dashboard
-                  </Link>
-                </div>
+            <div className="flex h-16 items-center justify-between">
+              {/* Logo */}
+              <div className="flex min-w-0 items-center gap-2">
+                <img
+                  src="/logo.png"
+                  alt="Logo"
+                  className="h-10 w-auto sm:h-12"
+                />
+                <span className="truncate text-lg font-bold tracking-wide text-teal-600 sm:text-2xl">
+                  Expense Tracker
+                </span>
               </div>
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <button
-                    // onClick={logoutHandler}
-                    type="button"
-                    className="relative m-2 inline-flex items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600"
-                  >
-                    <IoLogOutOutline className="h-5 w-5" aria-hidden="true" />
-                    <span>Logout</span>
-                  </button>
-                </div>
-                <div className="hidden md:ml-1 md:flex md:flex-shrink-0 md:items-center">
-                  {/* Profile dropdown */}
-                  <Menu as="div" className="relative ml-1">
-                    <div>
-                      <Menu.Button className="relative flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                        <span className="absolute -inset-1.5" />
-                        <span className="sr-only">Open user menu</span>
-                      </Menu.Button>
-                    </div>
+
+              {/* Desktop Links */}
+              <div className="hidden md:flex md:items-center md:space-x-6">
+                <Link
+                  to="/"
+                  className="font-medium text-gray-900 transition hover:text-teal-600"
+                >
+                  Home
+                </Link>
+                <Link
+                  to="/add-transaction"
+                  className="font-medium text-gray-500 transition hover:text-teal-600"
+                >
+                  Add Transaction
+                </Link>
+                <Link
+                  to="/add-category"
+                  className="font-medium text-gray-500 transition hover:text-teal-600"
+                >
+                  Add Category
+                </Link>
+                <Link
+                  to="/categories"
+                  className="font-medium text-gray-500 transition hover:text-teal-600"
+                >
+                  Categories
+                </Link>
+                <Link
+                  to="/profile"
+                  className="font-medium text-gray-500 transition hover:text-teal-600"
+                >
+                  Profile
+                </Link>
+                <Link
+                  to="/dashboard"
+                  className="font-medium text-gray-500 transition hover:text-teal-600"
+                >
+                  Dashboard
+                </Link>
+              </div>
+
+              {/* Right side */}
+              <div className="flex items-center gap-2">
+                {/* Desktop Profile Menu */}
+                <div className="hidden sm:block">
+                  <Menu as="div" className="relative">
+                    <MenuButton className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-teal-600 text-sm font-bold text-white shadow-md transition hover:scale-105 focus:outline-none">
+                      {user?.username?.charAt(0)?.toUpperCase() ||
+                        user?.email?.charAt(0)?.toUpperCase() ||
+                        "U"}
+                    </MenuButton>
+
                     <Transition
                       as={Fragment}
                       enter="transition ease-out duration-200"
                       enterFrom="transform opacity-0 scale-95"
                       enterTo="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-75"
+                      leave="transition ease-in duration-150"
                       leaveFrom="transform opacity-100 scale-100"
                       leaveTo="transform opacity-0 scale-95"
                     >
-                      <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        <Menu.Item>
-                          {({ active }) => (
+                      <MenuItems className="absolute right-0 z-50 mt-3 w-48 rounded-xl border border-gray-100 bg-white shadow-lg focus:outline-none">
+                        <div className="border-b border-gray-100 px-4 py-3">
+                          <p className="text-sm font-semibold text-gray-800">
+                            {user?.username || "User"}
+                          </p>
+                          <p className="truncate text-xs text-gray-500">
+                            {user?.email}
+                          </p>
+                        </div>
+
+                        <MenuItem>
+                          {({ focus }) => (
                             <Link
-                              to="/student-dashboard"
+                              to="/dashboard"
                               className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
+                                focus
+                                  ? "bg-teal-50 text-teal-600"
+                                  : "text-gray-700",
+                                "block px-4 py-3 text-sm"
                               )}
                             >
-                              My Dashboard
+                              Dashboard
                             </Link>
                           )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({ active }) => (
+                        </MenuItem>
+
+                        <MenuItem>
+                          {({ focus }) => (
                             <button
-                              // onClick={logoutHandler}
+                              onClick={logoutHandler}
                               className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
+                                focus
+                                  ? "bg-red-50 text-red-600"
+                                  : "text-gray-700",
+                                "block w-full px-4 py-3 text-left text-sm"
                               )}
                             >
-                              Sign out
+                              Sign Out
                             </button>
                           )}
-                        </Menu.Item>
-                      </Menu.Items>
+                        </MenuItem>
+                      </MenuItems>
                     </Transition>
                   </Menu>
+                </div>
+
+                {/* Mobile Hamburger */}
+                <div className="md:hidden">
+                  <DisclosureButton className="inline-flex items-center justify-center rounded-md p-2 text-gray-600 transition hover:bg-gray-100 hover:text-teal-600 focus:outline-none">
+                    {open ? (
+                      <XMarkIcon className="h-6 w-6" />
+                    ) : (
+                      <Bars3Icon className="h-6 w-6" />
+                    )}
+                  </DisclosureButton>
                 </div>
               </div>
             </div>
           </div>
-          {/* Mobile Navs  private links*/}
-          <Disclosure.Panel className="md:hidden">
-            <div className="space-y-1 pb-3 pt-2">
-              <Link to="/">
-                <Disclosure.Button
-                  as="button"
-                  className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 sm:pl-5 sm:pr-6"
-                >
-                  ExpenseTracker
-                </Disclosure.Button>
-              </Link>
-              <Link to="/add-transaction">
-                <Disclosure.Button
-                  as="button"
-                  className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 sm:pl-5 sm:pr-6"
-                >
-                  Add Transaction
-                </Disclosure.Button>
-              </Link>
-              <Link to="/add-category">
-                <Disclosure.Button
-                  as="button"
-                  className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 sm:pl-5 sm:pr-6"
-                >
-                  Add Category
-                </Disclosure.Button>
-              </Link>
-              <Link to="/categories">
-                <Disclosure.Button
-                  as="button"
-                  className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 sm:pl-5 sm:pr-6"
-                >
-                  Categories
-                </Disclosure.Button>
-              </Link>
-              <Link to="/profile">
-                <Disclosure.Button
-                  as="button"
-                  className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 sm:pl-5 sm:pr-6"
-                >
-                  Profile
-                </Disclosure.Button>
-              </Link>
-              <Link to="/dashboard">
-                <Disclosure.Button
-                  as="button"
-                  className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 sm:pl-5 sm:pr-6"
-                >
-                  My Dashboard
-                </Disclosure.Button>
-              </Link>
-            </div>
-            {/* Profile links */}
-            <div className="border-t border-gray-200 pb-3 pt-4">
-              <div className="mt-3 space-y-1">
-                <Disclosure.Button
-                  as="button"
-                  // onClick={logoutHandler}
-                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6"
-                >
-                  Sign out
-                </Disclosure.Button>
+
+          {/* Mobile Menu */}
+          <DisclosurePanel className="border-t border-gray-100 bg-white md:hidden">
+            <div className="space-y-2 px-4 py-4">
+              <div className="mb-3 rounded-2xl bg-gray-50 px-4 py-3">
+                <p className="truncate text-sm font-semibold text-gray-800">
+                  {user?.username || "User"}
+                </p>
+                <p className="truncate text-xs text-gray-500">{user?.email}</p>
               </div>
+
+              <Link
+                to="/"
+                onClick={() => close()}
+                className="block rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-teal-50 hover:text-teal-600"
+              >
+                Home
+              </Link>
+
+              <Link
+                to="/add-transaction"
+                onClick={() => close()}
+                className="block rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-teal-50 hover:text-teal-600"
+              >
+                Add Transaction
+              </Link>
+
+              <Link
+                to="/add-category"
+                onClick={() => close()}
+                className="block rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-teal-50 hover:text-teal-600"
+              >
+                Add Category
+              </Link>
+
+              <Link
+                to="/categories"
+                onClick={() => close()}
+                className="block rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-teal-50 hover:text-teal-600"
+              >
+                Categories
+              </Link>
+
+              <Link
+                to="/profile"
+                onClick={() => close()}
+                className="block rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-teal-50 hover:text-teal-600"
+              >
+                Profile
+              </Link>
+
+              <Link
+                to="/dashboard"
+                onClick={() => close()}
+                className="block rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-teal-50 hover:text-teal-600"
+              >
+                Dashboard
+              </Link>
+
+              <button
+                onClick={() => {
+                  close();
+                  logoutHandler();
+                }}
+                className="block w-full rounded-xl px-4 py-3 text-left text-sm font-medium text-red-600 transition hover:bg-red-50"
+              >
+                Sign Out
+              </button>
             </div>
-          </Disclosure.Panel>
+          </DisclosurePanel>
         </>
       )}
     </Disclosure>

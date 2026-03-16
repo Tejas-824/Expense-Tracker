@@ -1,4 +1,4 @@
 export const getUserFromStorage = () => {
-    const token = JSON.parse(localStorage.getItem("userInfo") || null);
-    return token?.token;
-  };
+  const userInfo = localStorage.getItem("userInfo");
+  return userInfo ? JSON.parse(userInfo) : null;
+};

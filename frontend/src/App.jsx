@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import HeroSection from "./components/Home/HomePage";
 import PublicNavbar from "./components/Navbar/PublicNavbar";
 import LoginForm from "./components/Users/Login";
@@ -12,19 +12,33 @@ import TransactionForm from "./components/Transactions/TransactionForm";
 import Dashboard from "./components/Users/Dashboard";
 import UserProfile from "./components/Users/UserProfile";
 import AuthRoute from "./components/Auth/AuthRoute";
+import { getUserFromStorage } from "./utils/getUserFromStorage";
 
 function App() {
-  const user = useSelector((state) => state?.auth?.user);
+  const reduxUser = useSelector((state) => state?.auth?.user);
+  const storedUser = getUserFromStorage();
+  const user = reduxUser || storedUser;
 
   return (
     <BrowserRouter>
-      {/* Navbar */}
-
       {user ? <PrivateNavbar /> : <PublicNavbar />}
+
       <Routes>
-        <Route path="/" element={<HeroSection />} />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/register" element={<RegistrationForm />} />
+        <Route
+          path="/"
+          element={user ? <Navigate to="/dashboard" replace /> : <HeroSection />}
+        />
+
+        <Route
+          path="/login"
+          element={user ? <Navigate to="/dashboard" replace /> : <LoginForm />}
+        />
+
+        <Route
+          path="/register"
+          element={user ? <Navigate to="/dashboard" replace /> : <RegistrationForm />}
+        />
+
         <Route
           path="/add-category"
           element={
@@ -33,6 +47,7 @@ function App() {
             </AuthRoute>
           }
         />
+
         <Route
           path="/categories"
           element={
@@ -41,6 +56,7 @@ function App() {
             </AuthRoute>
           }
         />
+
         <Route
           path="/update-category/:id"
           element={
@@ -49,6 +65,7 @@ function App() {
             </AuthRoute>
           }
         />
+
         <Route
           path="/add-transaction"
           element={
@@ -57,6 +74,7 @@ function App() {
             </AuthRoute>
           }
         />
+
         <Route
           path="/dashboard"
           element={
@@ -65,6 +83,7 @@ function App() {
             </AuthRoute>
           }
         />
+
         <Route
           path="/profile"
           element={
@@ -72,6 +91,11 @@ function App() {
               <UserProfile />
             </AuthRoute>
           }
+        />
+
+        <Route
+          path="*"
+          element={<Navigate to={user ? "/dashboard" : "/"} replace />}
         />
       </Routes>
     </BrowserRouter>

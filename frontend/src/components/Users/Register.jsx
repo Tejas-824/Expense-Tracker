@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
-import { FaUser, FaEnvelope, FaLock, FaUserPlus } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
 import { registerAPI } from "../../services/users/userService";
 import AlertMessage from "../Alert/AlertMessage";
 
@@ -29,9 +29,9 @@ const RegistrationForm = () => {
 
   const formik = useFormik({
     initialValues: {
+      username: "",
       email: "",
       password: "",
-      username: "",
       confirmPassword: "",
     },
     validationSchema,
@@ -39,9 +39,12 @@ const RegistrationForm = () => {
       setIsPending(true);
       setIsError(false);
       setIsSuccess(false);
+
       try {
-        await registerAPI(values);
+        const { confirmPassword, ...userData } = values;
+        await registerAPI(userData);
         setIsSuccess(true);
+        formik.resetForm();
       } catch (error) {
         setIsError(true);
         setErrorMsg(error?.response?.data?.message || "Something went wrong");
@@ -59,102 +62,121 @@ const RegistrationForm = () => {
   }, [isSuccess, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-tr from-blue-50 to-teal-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-teal-50 flex items-center justify-center p-4">
       <form
         onSubmit={formik.handleSubmit}
-        className="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl border border-gray-200 backdrop-blur-md"
+        className="w-full max-w-md bg-white/95 backdrop-blur-sm p-8 rounded-3xl shadow-2xl border border-gray-200 space-y-6 transition-all duration-300"
       >
-        <div className="flex flex-col items-center mb-6">
-          <div className="bg-gradient-to-r from-blue-500 to-teal-500 p-3 rounded-full shadow-md mb-2">
-            <FaUserPlus className="text-white text-2xl" />
-          </div>
-          <h2 className="text-3xl font-bold text-gray-800">Sign Up</h2>
-          <p className="text-sm text-gray-500 mt-1 text-center">
-            Create your account and join the fun!
+        <div className="text-center space-y-2">
+          <h2 className="text-3xl font-extrabold text-gray-800 tracking-tight">
+            Create Account
+          </h2>
+          <p className="text-sm text-center text-gray-500">
+            Sign up to start managing your expense dashboard
           </p>
         </div>
 
-        {isPending && <AlertMessage type="loading" message="Loading...." />}
+        {isPending && (
+          <AlertMessage type="loading" message="Registering you..." />
+        )}
         {isError && <AlertMessage type="error" message={errorMsg} />}
         {isSuccess && (
-          <AlertMessage type="success" message="Registration success" />
+          <AlertMessage type="success" message="Registration successful!" />
         )}
-        <div className="relative mb-4">
-          <FaUser className="absolute top-3 left-3 text-gray-400" />
-         <input
-  id="username"
-  name="user_field"
-  type="text"
-  autoComplete="new-username"    
-  inputMode="none"
-  spellCheck={false}
-  autoCorrect="off"
-  form="no-browser-autofill" 
-  {...formik.getFieldProps("username")}
-  placeholder="Username"
-  className="pl-10 pr-4 py-2 w-full rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
-/>
 
+        <div className="relative">
+          <FaUser className="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400" />
+          <input
+            id="username"
+            name="username"
+            type="text"
+            autoComplete="off"
+            spellCheck={false}
+            {...formik.getFieldProps("username")}
+            placeholder="Enter your username"
+            className="pl-11 pr-4 py-3 w-full rounded-xl border border-gray-300 bg-white text-base text-gray-700 placeholder:text-gray-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 focus:outline-none transition duration-150 caret-teal-600"
+          />
           {formik.touched.username && formik.errors.username && (
-            <span className="text-xs text-red-500">
+            <p className="text-xs text-red-500 mt-1 ml-1">
               {formik.errors.username}
-            </span>
+            </p>
           )}
         </div>
 
-        <div className="relative mb-4">
-          <FaEnvelope className="absolute top-3 left-3 text-gray-400" />
+        <div className="relative">
+          <FaEnvelope className="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400" />
           <input
             id="email"
+            name="email"
             type="email"
+            autoComplete="off"
             {...formik.getFieldProps("email")}
-            placeholder="Email"
-            className="pl-10 pr-4 py-2 w-full rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+            placeholder="Enter your email"
+            className="pl-11 pr-4 py-3 w-full rounded-xl border border-gray-300 bg-white text-base text-gray-700 placeholder:text-gray-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 focus:outline-none transition duration-150 caret-teal-600"
           />
           {formik.touched.email && formik.errors.email && (
-            <span className="text-xs text-red-500">{formik.errors.email}</span>
+            <p className="text-xs text-red-500 mt-1 ml-1">
+              {formik.errors.email}
+            </p>
           )}
         </div>
 
-        <div className="relative mb-4">
-          <FaLock className="absolute top-3 left-3 text-gray-400" />
+        <div className="relative">
+          <FaLock className="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400" />
           <input
             id="password"
+            name="password"
             type="password"
+            autoComplete="new-password"
             {...formik.getFieldProps("password")}
-            placeholder="Password"
-            className="pl-10 pr-4 py-2 w-full rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+            placeholder="Enter your password"
+            className="pl-11 pr-4 py-3 w-full rounded-xl border border-gray-300 bg-white text-base text-gray-700 placeholder:text-gray-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 focus:outline-none transition duration-150 caret-teal-600"
           />
           {formik.touched.password && formik.errors.password && (
-            <span className="text-xs text-red-500">
+            <p className="text-xs text-red-500 mt-1 ml-1">
               {formik.errors.password}
-            </span>
+            </p>
           )}
         </div>
 
-        <div className="relative mb-6">
-          <FaLock className="absolute top-3 left-3 text-gray-400" />
+        <div className="relative">
+          <FaLock className="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400" />
           <input
             id="confirmPassword"
+            name="confirmPassword"
             type="password"
+            autoComplete="new-password"
             {...formik.getFieldProps("confirmPassword")}
-            placeholder="Confirm Password"
-            className="pl-10 pr-4 py-2 w-full rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+            placeholder="Confirm your password"
+            className="pl-11 pr-4 py-3 w-full rounded-xl border border-gray-300 bg-white text-base text-gray-700 placeholder:text-gray-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 focus:outline-none transition duration-150 caret-teal-600"
           />
           {formik.touched.confirmPassword &&
             formik.errors.confirmPassword && (
-              <span className="text-xs text-red-500">
+              <p className="text-xs text-red-500 mt-1 ml-1">
                 {formik.errors.confirmPassword}
-              </span>
+              </p>
             )}
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-200 ease-in-out transform hover:scale-[1.02]"
-        >
-          Register
-        </button>
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            disabled={isPending}
+            className="w-full bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 disabled:opacity-70 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-300 transition-all duration-200"
+          >
+            {isPending ? "Registering..." : "Register"}
+          </button>
+        </div>
+
+        <p className="text-center text-sm text-gray-500 mt-2">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-teal-600 hover:text-teal-700 hover:underline font-semibold transition"
+          >
+            Login
+          </Link>
+        </p>
       </form>
     </div>
   );

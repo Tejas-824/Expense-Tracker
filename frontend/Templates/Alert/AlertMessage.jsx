@@ -8,42 +8,47 @@ const AlertMessage = ({ type, message }) => {
   let icon;
   let bgColor;
   let textColor;
-  let borderLeftColor;
+  let borderColor;
 
   switch (type) {
     case "error":
-      icon = <AiOutlineCloseCircle className="text-red-600 text-2xl" />;
-      bgColor = "bg-red-100";
-      textColor = "text-red-800";
-      borderLeftColor = "border-l-4 border-red-600";
+      icon = <AiOutlineCloseCircle className="text-red-600 text-xl shrink-0" />;
+      bgColor = "bg-red-50";
+      textColor = "text-red-700";
+      borderColor = "border border-red-200";
       break;
+
     case "success":
-      icon = <AiOutlineCheckCircle className="text-green-600 text-2xl" />;
-      bgColor = "bg-green-100";
-      textColor = "text-green-800";
-      borderLeftColor = "border-l-4 border-green-600";
+      icon = (
+        <AiOutlineCheckCircle className="text-green-600 text-xl shrink-0" />
+      );
+      bgColor = "bg-green-50";
+      textColor = "text-green-700";
+      borderColor = "border border-green-200";
       break;
+
     case "loading":
       icon = (
-        <AiOutlineLoading3Quarters className="animate-spin text-blue-600 text-2xl" />
+        <AiOutlineLoading3Quarters className="animate-spin text-blue-600 text-xl shrink-0" />
       );
-      bgColor = "bg-blue-100";
-      textColor = "text-blue-800";
-      borderLeftColor = "border-l-4 border-blue-600";
+      bgColor = "bg-blue-50";
+      textColor = "text-blue-700";
+      borderColor = "border border-blue-200";
       break;
+
     default:
       icon = null;
       bgColor = "";
       textColor = "";
-      borderLeftColor = "";
+      borderColor = "";
   }
 
   return (
     <div
-      className={`flex items-center p-4 rounded-lg shadow-md ${bgColor} ${textColor} ${borderLeftColor} space-x-3`}
+      className={`flex items-center gap-3 rounded-xl px-4 py-3 mb-4 shadow-sm ${bgColor} ${textColor} ${borderColor}`}
     >
       {icon}
-      <span className="text-sm font-medium">{message}</span>
+      <span className="text-sm font-medium leading-relaxed">{message}</span>
     </div>
   );
 };

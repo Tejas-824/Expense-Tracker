@@ -2,6 +2,7 @@ import { FaMoneyBillWave, FaRegCalendarAlt, FaSignInAlt, FaList, FaChartPie, FaQ
 import { IoIosStats } from "react-icons/io";
 import { FaFilter } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { getUserFromStorage } from "../../utils/getUserFromStorage";
 
 const features = [
   { icon: <FaMoneyBillWave />, text: "Smart Expense Tracking", bg: "bg-gradient-to-r from-pink-400 to-red-400" },
@@ -18,9 +19,11 @@ const processSteps = [
 ];
 
 const HeroSection = () => {
+  const user = getUserFromStorage();
+  const isLoggedIn = !!user;
+
   return (
     <>
-      {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-24 px-6 overflow-hidden">
         <div className="relative max-w-7xl mx-auto flex flex-col items-center text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold drop-shadow-lg">
@@ -30,9 +33,7 @@ const HeroSection = () => {
             A smarter way to manage your money
           </p>
 
-          {/* Features Section */}
           <div className="mt-12 max-w-7xl mx-auto w-full">
-            {/* Mobile: horizontal scroll */}
             <div className="flex sm:hidden gap-6 overflow-x-auto py-4 px-2 scrollbar-hide">
               {features.map((feat, idx) => (
                 <div
@@ -45,7 +46,6 @@ const HeroSection = () => {
               ))}
             </div>
 
-            {/* Tablet & Desktop: grid */}
             <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-5 gap-6">
               {features.map((feat, idx) => (
                 <div
@@ -59,8 +59,7 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* CTA Button */}
-          <Link to="/register">
+          <Link to={isLoggedIn ? "/profile" : "/register"}>
             <button className="mt-10 px-8 py-3 bg-gradient-to-r from-pink-500 to-red-500 hover:from-red-500 hover:to-pink-500 rounded-full text-white font-bold shadow-lg transform transition hover:scale-105">
               Get Started
             </button>
@@ -68,7 +67,6 @@ const HeroSection = () => {
         </div>
       </section>
 
-      {/* How It Works Section */}
       <section className="py-20 px-6 bg-gray-50">
         <h2 className="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-12">
           How It Works
@@ -89,7 +87,6 @@ const HeroSection = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="relative bg-gradient-to-r from-purple-600 to-pink-500 text-white py-24 px-6 text-center">
         <div className="relative max-w-3xl mx-auto">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
@@ -98,7 +95,7 @@ const HeroSection = () => {
           <p className="text-base sm:text-lg md:text-xl mb-8">
             Start your journey to smarter spending and better savings today — it's simple, free, and made just for you.
           </p>
-          <Link to="/register">
+          <Link to={isLoggedIn ? "/profile" : "/register"}>
             <button className="px-8 py-3 bg-white text-purple-600 font-bold rounded-full shadow-lg transform transition hover:scale-105 hover:bg-gray-100">
               Join Now – It’s Free!
             </button>
